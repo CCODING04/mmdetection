@@ -54,11 +54,11 @@ def plot_curve(log_dicts, args):
                 raise KeyError(
                     f'{args.json_logs[i]} does not contain metric {metric}')
 
-            if 'mAP' in metric:
-                xs = np.arange(1, max(epochs) + 1)
+            if 'mAP' in metric or args.val_mode:
                 ys = []
                 for epoch in epochs:
                     ys += log_dict[epoch][metric]
+                xs = np.arange(1, len(ys) + 1)
                 ax = plt.gca()
                 ax.set_xticks(xs)
                 plt.xlabel('epoch')
@@ -104,6 +104,11 @@ def add_plot_parser(subparsers):
         nargs='+',
         default=['bbox_mAP'],
         help='the metric that you want to plot')
+    parser_plt.add_argument(
+        '--val_mode',
+        default=False,
+        action='store_true'
+    )
     parser_plt.add_argument('--title', type=str, help='title of figure')
     parser_plt.add_argument(
         '--legend',
